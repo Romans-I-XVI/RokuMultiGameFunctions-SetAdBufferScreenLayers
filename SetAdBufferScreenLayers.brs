@@ -1,12 +1,6 @@
-function SetAdBufferScreenLayers(game_name as String, hd_image as String, sd_image as String, background_color = "#FF040404" as String, text_color = "#FFCCCCCC" as String)
+function SetAdBufferScreenLayers(image_url as String, background_color = "#FF040404" as String)
 	device_info = CreateObject("roDeviceInfo")
 	display_size = device_info.GetDisplaySize()
-	aspect_ratio = device_info.GetDisplayAspectRatio()
-	if aspect_ratio = "4x3"
-		image_url = sd_image
-	else
-		image_url = hd_image
-	end if
 	bitmap = CreateObject("roBitmap", image_url)
 
 	background_layer = {
@@ -17,23 +11,20 @@ function SetAdBufferScreenLayers(game_name as String, hd_image as String, sd_ima
 		url: image_url,
 		TargetTranslation: {x: cint(display_size.w / 2 - bitmap.GetWidth() / 2), y: cint(display_size.h * 0.12)}
 	}
-	text_layer = {
-		Text: game_name + " will be right back",
-		TargetRect: {x: 0, y: image_layer.TargetTranslation.y + bitmap.GetHeight() + 10, w: display_size.w, h: 100},
-		TextAttrs: {
-			Color: text_color,
-			Font: "Large",
-			HAlign: "HCenter",
-			VAlign: "Top "
-		}
-	}
-	screen_elements = [
-		image_layer,
-		text_layer
-	]
 
 	adIface = Roku_Ads()
 	adIface.setAdBufferScreenLayer(1, background_layer)
-	adIface.setAdBufferScreenLayer(2, screen_elements)
+	adIface.setAdBufferScreenLayer(2, image_layer)
 	adIface.enableAdBufferMessaging(false, true)
+end function
+
+function DrawAdBufferScreenLayersToScreen(draw2d as Object, image_url as String, background_color = &h040404FF as Integer)
+	device_info = CreateObject("roDeviceInfo")
+	display_size = device_info.GetDisplaySize()
+	bitmap = CreateObject("roBitmap", image_url)
+	image_pos = {x: cint(display_size.w / 2 - bitmap.GetWidth() / 2), y: cint(display_size.h * 0.12)}
+
+	draw2d.DrawRect(0, 0, draw2d.GetWidth(), draw2d.GetHeight(), background_color)
+	draw2d.DrawObject(image_pos.x, image_pos.y, bitmap)
+
 end function
