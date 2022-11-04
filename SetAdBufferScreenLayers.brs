@@ -10,6 +10,8 @@ function SetAdBufferScreenLayers(image_url as String, background_color = "#FF040
 	scale = 1.0
 	if device_info.GetDisplayAspectRatio() = "4x3"
 		scale = 0.75
+	else if display_size.w <> 1280
+		scale = display_size.w / 1280
 	end if
 	bitmap_scaled_size = {width: cint(bitmap.GetWidth() * scale), height: cint(bitmap.GetHeight() * scale)}
 	image_layer = {
