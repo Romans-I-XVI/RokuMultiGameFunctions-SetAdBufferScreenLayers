@@ -26,13 +26,13 @@ function SetAdBufferScreenLayers(image_url as String, background_color = "#FF040
 end function
 
 function DrawAdBufferScreenLayersToScreen(screen as Object, image_url as String, extra_text = "" as String, background_color = &h040404FF as Integer)
+	device_info = CreateObject("roDeviceInfo")
 	bitmap = CreateObject("roBitmap", image_url)
 	region = CreateObject("roRegion", bitmap, 0, 0, bitmap.GetWidth(), bitmap.GetHeight())
 	region.SetScaleMode(1)
 	scale = invalid
 	font_size = 22
-	device = CreateObject("roDeviceInfo")
-	if device.GetDisplayAspectRatio() = "4x3"
+	if device_info.GetDisplayAspectRatio() = "4x3"
 		scale = 0.75
 		font_size = 18
 	else if screen.GetWidth() <> 1280
