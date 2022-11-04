@@ -25,6 +25,8 @@ end function
 
 function DrawAdBufferScreenLayersToScreen(screen as Object, image_url as String, extra_text = "" as String, background_color = &h040404FF as Integer)
 	bitmap = CreateObject("roBitmap", image_url)
+	region = CreateObject("roRegion", bitmap, 0, 0, bitmap.GetWidth(), bitmap.GetHeight())
+	region.SetScaleMode(1)
 	scale = invalid
 	font_size = 22
 	device = CreateObject("roDeviceInfo")
@@ -38,9 +40,9 @@ function DrawAdBufferScreenLayersToScreen(screen as Object, image_url as String,
 
 	screen.Clear(background_color)
 	if scale = invalid
-		screen.DrawObject(cint(screen.GetWidth() / 2 - bitmap.GetWidth() / 2), cint(screen.GetHeight() * 0.12), bitmap)
+		screen.DrawObject(cint(screen.GetWidth() / 2 - region.GetWidth() / 2), cint(screen.GetHeight() * 0.12), region)
 	else
-		screen.DrawScaledObject(cint(screen.GetWidth() / 2 - (bitmap.GetWidth() / 2) * scale), cint(screen.GetHeight() * 0.12), scale, scale, bitmap)
+		screen.DrawScaledObject(cint(screen.GetWidth() / 2 - (region.GetWidth() / 2) * scale), cint(screen.GetHeight() * 0.12), scale, scale, region)
 	end if
 	if extra_text <> ""
 		font_registry = CreateObject("roFontRegistry")
