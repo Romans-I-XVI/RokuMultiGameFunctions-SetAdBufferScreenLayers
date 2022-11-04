@@ -27,9 +27,13 @@ function DrawAdBufferScreenLayersToScreen(screen as Object, image_url as String,
 	bitmap = CreateObject("roBitmap", image_url)
 	scale = invalid
 	font_size = 22
-	if CreateObject("roDeviceInfo").GetDisplayAspectRatio() = "4x3"
+	device = CreateObject("roDeviceInfo")
+	if device.GetDisplayAspectRatio() = "4x3"
 		scale = 0.75
 		font_size = 18
+	else if screen.GetWidth() <> 1280
+		scale = screen.GetWidth() / 1280
+		font_size = cint(font_size * scale)
 	end if
 
 	screen.Clear(background_color)
