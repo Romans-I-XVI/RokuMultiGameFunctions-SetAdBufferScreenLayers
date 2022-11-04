@@ -10,6 +10,8 @@ function SetAdBufferScreenLayers(image_url as String, background_color = "#FF040
 	scale = 1.0
 	if device_info.GetDisplayAspectRatio() = "4x3"
 		scale = 0.75
+	else if display_size.w <> 1280
+		scale = display_size.w / 1280
 	end if
 	bitmap_scaled_size = {width: cint(bitmap.GetWidth() * scale), height: cint(bitmap.GetHeight() * scale)}
 	image_layer = {
@@ -24,19 +26,25 @@ function SetAdBufferScreenLayers(image_url as String, background_color = "#FF040
 end function
 
 function DrawAdBufferScreenLayersToScreen(screen as Object, image_url as String, extra_text = "" as String, background_color = &h040404FF as Integer)
+	device_info = CreateObject("roDeviceInfo")
 	bitmap = CreateObject("roBitmap", image_url)
+	region = CreateObject("roRegion", bitmap, 0, 0, bitmap.GetWidth(), bitmap.GetHeight())
+	region.SetScaleMode(1)
 	scale = invalid
 	font_size = 22
-	if CreateObject("roDeviceInfo").GetDisplayAspectRatio() = "4x3"
+	if device_info.GetDisplayAspectRatio() = "4x3"
 		scale = 0.75
 		font_size = 18
+	else if screen.GetWidth() <> 1280
+		scale = screen.GetWidth() / 1280
+		font_size = cint(font_size * scale)
 	end if
 
 	screen.Clear(background_color)
 	if scale = invalid
-		screen.DrawObject(cint(screen.GetWidth() / 2 - bitmap.GetWidth() / 2), cint(screen.GetHeight() * 0.12), bitmap)
+		screen.DrawObject(cint(screen.GetWidth() / 2 - region.GetWidth() / 2), cint(screen.GetHeight() * 0.12), region)
 	else
-		screen.DrawScaledObject(cint(screen.GetWidth() / 2 - (bitmap.GetWidth() / 2) * scale), cint(screen.GetHeight() * 0.12), scale, scale, bitmap)
+		screen.DrawScaledObject(cint(screen.GetWidth() / 2 - (region.GetWidth() / 2) * scale), cint(screen.GetHeight() * 0.12), scale, scale, region)
 	end if
 	if extra_text <> ""
 		font_registry = CreateObject("roFontRegistry")
